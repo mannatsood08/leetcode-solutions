@@ -1,22 +1,31 @@
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
 class Solution:
-    def maxPathSum(self, root: Optional[TreeNode]) -> int:
-        res = float('-inf')
+    def findLadders(
+        self, beginWord: str, endWord: str, wordList: List[str]
+    ) -> List[List[str]]:
+        def neighbors(word):
+            for i in range(len(word)):
+                for char in "abcdefghijklmnopqrstuvwxyz":
+                    yield word[:i] + char + word[i + 1 :]
 
-        def dfs(node):
-            nonlocal res
-            if not node:
-                return 0
-            
-            left_sum = dfs(node.left)
-            right_sum = dfs(node.right)
-            res = max(res, node.val + left_sum + right_sum)
-            return max(0, max(left_sum, right_sum) + node.val)
-        
-        dfs(root)
-        return res
+        i = 1
+        words = {beginWord: lambda: [[beginWord]]}
+        unvisited = set(wordList)
+        while words and endWord not in words:
+            i += 1
+            new_words = defaultdict(lambda: lambda: [])
+            for s in words:
+                for ss in neighbors(s):
+                    if ss in unvisited:
+
+                        def get_seqs(capture=(ss, new_words[ss], words[s])):
+                            ss, ss_get_seqs, s_get_seqs = capture
+                            seqs = ss_get_seqs()
+                            for seq in s_get_seqs():
+                                seq.append(ss)
+                                seqs.append(seq)
+                            return seqs
+
+                        new_words[ss] = get_seqs
+            words = new_words
+            unvisited -= words.keys()
+        return words[endWord]()
