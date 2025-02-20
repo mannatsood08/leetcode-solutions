@@ -1,33 +1,63 @@
-class Solution {
-    public boolean isAdditiveNumber(String num) {
-        if (num.length() < 3) return false;
-        for (int ia = 1; ia < num.length() / 2 + 1; ia++) {
-            String a = num.substring(0, ia);
-            if (a.startsWith("0") && a.length() > 1) return false;
-            for (int ib = ia + 1; ib < num.length() / 3 * 2 + 1; ib++) {
-                String b = num.substring(ia, ib);
-                if (b.startsWith("0") && b.length() > 1) continue;
-                if (solve(a, b, num, ib)) return true;
-            }
+class NumArray {
+    private int[] tree;
+    private int[] arr;
+
+    public NumArray(int[] nums) {
+        arr = Arrays.copyOf(nums, nums.length);
+        tree = new int[4 * nums.length];
+        if (nums.length > 0) {
+            build(1, 0, nums.length - 1);
         }
-        return false;
     }
 
-    private static boolean solve(String a, String b, String num, int cur) {
-        if (cur == num.length()) return true;
-        StringBuilder sb = new StringBuilder();
-        int carry = 0;
-        for (int ia = a.length() -1, ib = b.length() - 1; ia >= 0 || ib >= 0 ;ia--, ib--) {
-            int c = (ia < 0 ? '0' : a.charAt(ia)) + (ib < 0 ? '0' : b.charAt(ib)) + carry - '0';
-            if (c > '9') {
-                c -= 10;
-                carry = 1;
-            } else carry = 0;
-            sb.append((char)c);
+    private void build(int node, int start, int end) {
+        if (start == end) {
+            tree[node] = arr[start];
+        } else {
+            int mid = (start + end) / 2;
+            int left = node * 2;
+            int right = node * 2 + 1;
+
+            build(left, start, mid);
+            build(right, mid + 1, end);
+            tree[node] = tree[left] + tree[right];
         }
-        if (carry == 1) sb.append('1');
-        String s = sb.reverse().toString();
-        if (!num.substring(cur).startsWith(s)) return false;
-        return solve(b, s, num, cur + s.length());
+    }
+
+    public void update(int index, int val) {
+        if (arr.length > 0) {
+            update(1, 0, arr.length - 1, index, val);
+        }
+    }
+
+    private void update(int node, int start, int end, int index, int val) {
+        if (start == end) {
+            arr[start] = val;
+            tree[node] = val;
+        } else {
+            int mid = (start + end) / 2;
+            if (index <= mid) {
+                update(node * 2, start, mid, index, val);
+            } else {
+                update(node * 2 + 1, mid + 1, end, index, val);
+            }
+            tree[node] = tree[node * 2] + tree[node * 2 + 1];
+        }
+    }
+
+    public int sumRange(int left, int right) {
+        if (arr.length == 0) return 0;
+        return query(1, 0, arr.length - 1, left, right);
+    }
+
+    private int query(int node, int start, int end, int L, int R) {
+        if (R < start || end < L) return 0;
+        if (L <= start && end <= R) return tree[node];
+
+        int mid = (start + end) / 2;
+        int left = query(node * 2, start, mid, L, R);
+        int right = query(node * 2 + 1, mid + 1, end, L, R);
+
+        return left + right;
     }
 }
