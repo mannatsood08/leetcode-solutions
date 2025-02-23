@@ -14,26 +14,35 @@
  * }
  */
 class Solution {
-    public TreeNode tree(int[] preorder, int pres, int pree, int[] postorder, int poss, int pose){
-        if(pres> pree || poss> pose) return null;
-        TreeNode root= new TreeNode(preorder[pres]);
-        if(pres== pree) return root;
-        int leftch= preorder[pres+1];
-        int leftpo= -1;
-        for(int i=poss; i<=pose; i++){
-            if(postorder[i]==leftch){
-                leftpo=i;
-                break;
-            }
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if(preorder.length == 1 && inorder.length == 1)return new TreeNode(preorder[0]);
+        return solve(preorder, inorder, 0, preorder.length - 1, 0, inorder.length - 1);
+    }
+
+  
+
+    public TreeNode solve(int[] p, int[] i, int psi, int pei, int isi, int iei){
+
+        if (isi > iei)
+            return null;
+
+
+        //pre ka 1st root
+        TreeNode nn = new TreeNode(p[psi]);
+        int val = p[psi];
+        int idx = isi;
+        while(i[idx] != p[psi]){
+            idx++;
         }
 
-        int lefts= leftpo-poss+1;
-        root.left= tree(preorder, pres+1, pres+ lefts, postorder, poss, leftpo);
-        root.right= tree(preorder, pres+lefts+1, pree, postorder, leftpo+1, pose-1);
-        return root;
-    }
-    public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
-        TreeNode root= tree(preorder, 0, preorder.length-1, postorder, 0, postorder.length-1);
-        return root;
+        int te = idx - isi;
+
+        nn.left = solve(p, i, psi + 1, psi + te, isi, idx - 1);
+        //left 
+
+        nn.right = solve(p, i, psi + te + 1, pei, idx + 1, iei);
+        //right
+
+        return nn;
     }
 }
