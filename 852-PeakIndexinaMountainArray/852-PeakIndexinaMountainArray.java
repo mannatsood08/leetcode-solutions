@@ -1,10 +1,16 @@
-// Last updated: 6/24/2025, 12:41:44 AM
+// Last updated: 6/24/2025, 1:02:02 AM
 class Solution {
     public int peakIndexInMountainArray(int[] nums) {
-      for(int i=1;i<nums.length-1;i++){
-        if(nums[i]>nums[i-1]&&nums[i]>nums[i+1])
-        return i;
-      } 
-      return -1; 
+        int start=0;
+        int end=nums.length-1;
+        while(start<end){
+            int middle=start+(end-start)/2;
+            if(nums[middle]>nums[middle+1])
+            end=middle;
+            else
+            start=middle+1;
+        }
+        return start;
+
     }
 }
