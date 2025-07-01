@@ -1,16 +1,13 @@
-// Last updated: 6/24/2025, 7:13:38 PM
+// Last updated: 7/1/2025, 12:48:08 PM
 class Solution {
     public int removeDuplicates(int[] nums) {
-    if (nums.length == 0) return 0;
-
-    int write = 0;
-    for (int i = 1; i < nums.length; i++) {
-        if (nums[i] != nums[write]) {
+        int write=0;
+        for(int i=0;i<nums.length;i++){
+            if(nums[i]!=nums[write]){
             write++;
-            nums[write] = nums[i];
+            nums[write]=nums[i];
+            }
         }
+        return write+1;
     }
-    return write + 1;
 }
-
-    }
