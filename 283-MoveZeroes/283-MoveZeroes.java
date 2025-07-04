@@ -1,19 +1,20 @@
-// Last updated: 7/4/2025, 4:56:53 PM
+// Last updated: 7/4/2025, 4:58:14 PM
 class Solution {
-    public void moveZeroes(int[] nums) {
-        int c = 0; // Pointer to place next non-zero element
-        
-        // Step 1: Move all non-zero elements to the front
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] != 0) {
-                nums[c] = nums[i];
-                c++;
-            }
+    static {
+        for(int i = 0; i < 1000; i++){
+            moveZeroes(new int[] {0,0});
         }
-        
-        // Step 2: Fill remaining positions with 0
-        for (int i = c; i < nums.length; i++) {
-            nums[i] = 0;
+    }
+    public static void moveZeroes(int[] arr) {
+        int count = 0;
+
+        for(int i=0; i<arr.length; i++){
+            if(arr[i] != 0){
+                int temp = arr[i];
+                arr[i] = 0;
+                arr[count++] = temp;
+               
+            }
         }
     }
 }
